@@ -44,6 +44,7 @@ namespace ProductsApi
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseMiddleware<AuthenticationMiddleware>();
 
             app.UseMvc();
         }
