@@ -8,6 +8,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using ProductsApi.Models;
+using ProductsApi.Repositories;
 
 namespace ProductsApi
 {
@@ -24,6 +26,15 @@ namespace ProductsApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddMvc();
+            
+            services.AddSingleton<IProductRepository, MongoProductRepository>();
+
+            services.Configure<MongoSettings>( options =>
+            {
+                options.ConnectionString = Configuration.GetSection( "MongoConnection:ConnectionString" ).Value;
+                options.Database = Configuration.GetSection( "MongoConnection:Database" ).Value;
+            } );
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
