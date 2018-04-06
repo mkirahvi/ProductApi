@@ -9,7 +9,7 @@ namespace ProductsApi.Repositories
 {
     public class MongoProductRepository : IProductRepository
     {
-        private MobileContext _context = new MobileContext();
+        private ProductContext _context = new ProductContext();
         
 
         public void Add( Product item )
@@ -19,13 +19,13 @@ namespace ProductsApi.Repositories
 
         public Product Find( string id )
         {
-            Product item = _context.GetPhone(id).Result;
+            Product item = _context.GetProduct(id).Result;
             return item;
         }
 
         public IEnumerable<Product> GetAll()
         {
-            return _context.GetPhones().Result;
+            return _context.GetProducts().Result;
         }
 
         public void Remove( string id )

@@ -6,31 +6,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Phone = ProductsApi.Models.Product;
 
 namespace ProductsApi.Repositories
 {
-    public class MobileContext
+    public class ProductContext
     {
         IMongoDatabase database; 
 
-        public MobileContext()
+        public ProductContext()
         {
-            string connectionString = "mongodb://superAdmin:admin123@88.206.52.198:27017/Catalog";
-            var connection = new MongoUrlBuilder( connectionString );
+            string connectionString = "mongodb://superAdmin:admin123@88.206.52.198:27017";
+            var connection = new MongoUrlBuilder( connectionString);
+            
             MongoClient client = new MongoClient( connectionString );
-            database = client.GetDatabase( connection.DatabaseName );
+            database = client.GetDatabase( "Catalog" );
         }
 
-        private IMongoCollection<Phone> Phones
+        private IMongoCollection<Product> Products
         {
-            get { return database.GetCollection<Phone>( "Phones" ); }
+            get { return database.GetCollection<Product>( "Items" ); }
         }
 
-        public async Task<IEnumerable<Phone>> GetPhones( )
+        public async Task<IEnumerable<Product>> GetProducts( )
         {
             // строитель фильтров
-            var builder = new FilterDefinitionBuilder<Phone>();
+            var builder = new FilterDefinitionBuilder<Product>();
             var filter = builder.Empty; 
             
             //if( !String.IsNullOrWhiteSpace( name ) )
@@ -46,28 +46,28 @@ namespace ProductsApi.Repositories
             //    filter = filter & builder.Lte( "Price", maxPrice.Value );
             //}
 
-            return await Phones.Find( filter ).Limit(10).ToListAsync();
+            return await Products.Find( filter ).Limit(10).ToListAsync();
         }
 
         // получаем один документ по id
-        public async Task<Phone> GetPhone( string id )
+        public async Task<Product> GetProduct( string id )
         {
-            return await Phones.Find( new BsonDocument( "_id", new ObjectId( id ) ) ).FirstOrDefaultAsync();
+            return await Products.Find( new BsonDocument( "_id", new ObjectId( id ) ) ).FirstOrDefaultAsync();
         }
         // добавление документа
-        public async Task Create( Phone p )
+        public async Task Create( Product p )
         {
-            await Phones.InsertOneAsync( p );
+            await Products.InsertOneAsync( p );
         }
         // обновление документа
-        public async Task Update( Phone p )
+        public async Task Update( Product p )
         {
-            await Phones.ReplaceOneAsync( new BsonDocument( "_id", new ObjectId( p.Id ) ), p );
+            await Products.ReplaceOneAsync( new BsonDocument( "_id", new ObjectId( p.Id ) ), p );
         }
         // удаление документа
         public async Task Remove( string id )
         {
-            await Phones.DeleteOneAsync( new BsonDocument( "_id", new ObjectId( id ) ) );
+            await Products.DeleteOneAsync( new BsonDocument( "_id", new ObjectId( id ) ) );
         }
     }
 }

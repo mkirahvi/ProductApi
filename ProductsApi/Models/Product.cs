@@ -12,14 +12,19 @@ namespace ProductsApi.Models
         [BsonRepresentation( BsonType.ObjectId )]
         public string Id { get; set; }
 
+        [BsonElement("name")]
         public string Name { get; set; }
 
+        [BsonElement( "image" )]
         public string Image { get; set; }
 
+        [BsonElement( "link" )]
         public string Link { get; set; }
 
+        [BsonElement( "available" )]
         public bool Available { get; set; }
 
+        [BsonElement( "history" )]
         public IEnumerable<ProductHistory> History { get; set; }
     }
 }
