@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace ProductsApi.Repositories
 {
-    public class ProductContext
+    public class UserContext
     {
         IMongoDatabase database; 
 
-        public ProductContext()
+        public UserContext()
         {
             string connectionString = "mongodb://superAdmin:admin123@88.206.52.198:27017";
             var connection = new MongoUrlBuilder( connectionString);
@@ -19,15 +19,15 @@ namespace ProductsApi.Repositories
             database = client.GetDatabase( "Catalog" );
         }
 
-        private IMongoCollection<Product> Products
+        private IMongoCollection<User> Users
         {
-            get { return database.GetCollection<Product>( "Items" ); }
+            get { return database.GetCollection<User>( "users" ); }
         }
 
-        public async Task<IEnumerable<Product>> GetProducts( )
+        public async Task<IEnumerable<User>> GetUsers( )
         {
             // строитель фильтров
-            var builder = new FilterDefinitionBuilder<Product>();
+            var builder = new FilterDefinitionBuilder<User>();
             var filter = builder.Empty; 
             
             //if( !String.IsNullOrWhiteSpace( name ) )
@@ -43,28 +43,28 @@ namespace ProductsApi.Repositories
             //    filter = filter & builder.Lte( "Price", maxPrice.Value );
             //}
 
-            return await Products.Find( filter ).Limit(10).ToListAsync();
+            return await Users.Find( filter ).Limit(10).ToListAsync();
         }
 
         // получаем один документ по id
-        public async Task<Product> GetProduct( string id )
+        public async Task<User> GetUser( string id )
         {
-            return await Products.Find( new BsonDocument( "_id", new ObjectId( id ) ) ).FirstOrDefaultAsync();
+            return await Users.Find( new BsonDocument( "_id", new ObjectId( id ) ) ).FirstOrDefaultAsync();
         }
         // добавление документа
-        public async Task Create( Product p )
+        public async Task Create( User p )
         {
-            await Products.InsertOneAsync( p );
+            await Users.InsertOneAsync( p );
         }
         // обновление документа
-        public async Task Update( Product p )
+        public async Task Update( User p )
         {
-            await Products.ReplaceOneAsync( new BsonDocument( "_id", new ObjectId( p.Id ) ), p );
+            await Users.ReplaceOneAsync( new BsonDocument( "_id", new ObjectId( p.Id ) ), p );
         }
         // удаление документа
         public async Task Remove( string id )
         {
-            await Products.DeleteOneAsync( new BsonDocument( "_id", new ObjectId( id ) ) );
+            await Users.DeleteOneAsync( new BsonDocument( "_id", new ObjectId( id ) ) );
         }
     }
 }

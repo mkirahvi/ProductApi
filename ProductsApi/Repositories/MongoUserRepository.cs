@@ -3,25 +3,25 @@ using ProductsApi.Models;
 
 namespace ProductsApi.Repositories
 {
-    public class MongoProductRepository : IProductRepository
+    public class MongoUserRepository : IUserRepository
     {
-        private ProductContext _context = new ProductContext();
+        private UserContext _context = new UserContext();
         
 
-        public void Add( Product item )
+        public void Add( User item )
         {
              _context.Create( item ).Wait();
         }
 
-        public Product Find( string id )
+        public User Find( string id )
         {
-            Product item = _context.GetProduct(id).Result;
+            User item = _context.GetUser(id).Result;
             return item;
         }
 
-        public IEnumerable<Product> GetAll()
+        public IEnumerable<User> GetAll()
         {
-            return _context.GetProducts().Result;
+            return _context.GetUsers().Result;
         }
 
         public void Remove( string id )
@@ -29,7 +29,7 @@ namespace ProductsApi.Repositories
             _context.Remove( id ).Wait();
         }
 
-        public void Update( Product item )
+        public void Update( User item )
         {
             _context.Update( item ).Wait();
         }

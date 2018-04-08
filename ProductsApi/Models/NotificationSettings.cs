@@ -8,7 +8,7 @@ namespace ProductsApi.Models
 
         public bool PriceChanging { get; set; }
 
-        public decimal NecessaryPrice { get; set; }
+        public string NecessaryPrice { get; set; }
 
         public bool Sign { get; set; }
 
