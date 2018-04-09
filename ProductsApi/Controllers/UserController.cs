@@ -18,10 +18,12 @@ namespace ProductsApi.Controllers
     public class UserController : Controller
     {
         public IUserRepository UserRepository { get; set; }
+        public IProductRepository ProductRepository { get; set; }
 
-        public UserController(IUserRepository userRepository)
+        public UserController(IUserRepository userRepository, IProductRepository productRepository )
         {
             UserRepository = userRepository;
+            ProductRepository = productRepository;
         }
 
         [HttpPost( "/token" )]
@@ -58,7 +60,7 @@ namespace ProductsApi.Controllers
 
             // сериализация ответа
             Response.ContentType = "application/json";
-            await Response.WriteAsync( JsonConvert.SerializeObject( response, new JsonSerializerSettings { Formatting = Formatting.Indented } ) );
+            await Response.WriteAsync( JsonConvert.SerializeObject( encodedJwt, new JsonSerializerSettings { Formatting = Formatting.None } ) );
         }
 
         private ClaimsIdentity GetIdentity( string username, string password )
@@ -87,19 +89,25 @@ namespace ProductsApi.Controllers
         }
 
         [Authorize]
-        [HttpGet("/products")]
+        [HttpGet( "/products" )]
         public IEnumerable<MonitoredProduct> GetMonitoredProducts()
         {
             var user = UserRepository
                 .GetAll()
                 .FirstOrDefault( x => x.Name == User.Identity.Name );
 
-            if(user == null )
+            if( user == null || user.MonitoredProducts == null )
             {
                 return Enumerable.Empty<MonitoredProduct>();
             }
 
-            return user.MonitoredProducts;
+            var result = user.MonitoredProducts;
+            foreach( var item in result )
+            {
+                item.Product = ProductRepository.Find( item.ProductId );
+            }
+
+            return result;
         }
 
         [HttpGet]

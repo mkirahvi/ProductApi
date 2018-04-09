@@ -5,5 +5,7 @@
         public string ProductId { get; set; }
 
         public NotificationSettings NotificationSettings { get; set; }
+
+        public Product Product { get; set; }
     }
 }
