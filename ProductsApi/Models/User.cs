@@ -15,6 +15,6 @@ namespace ProductsApi.Models
 
         public string Email { get; set; }
 
-        public IEnumerable<MonitoredProduct> MonitoredProducts { get; set; }
+        public ICollection<MonitoredProduct> MonitoredProducts { get; set; }
     }
 }

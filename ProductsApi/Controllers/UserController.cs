@@ -110,64 +110,71 @@ namespace ProductsApi.Controllers
             return result;
         }
 
-        [HttpGet]
-        public IEnumerable<User> Get()
+        /// <summary>
+        /// http://localhost:7575/subscribe?productId=5a14a7d129c52c6442372045
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost("/subscribe")]
+        public IActionResult Create(string productId)
         {
-            return UserRepository.GetAll();
-        }
-
-        [HttpGet("{id}", Name = "GetUser")]
-        public IActionResult GetUser(string id)
-        {
-            var item = UserRepository.Find(id);
-            if(item == null )
-            {
-                return NotFound();
-            }
-
-            return new JsonResult( item );
-        }
-
-        [HttpPost]
-        public IActionResult Create([FromBody]User item)
-        {
-            if( item == null )
-            {
-                return BadRequest();
-            }
-            UserRepository.Add( item );
-            return CreatedAtRoute( "GetUser", new { id = item.Id.ToString() }, item );
-        }
-
-        [HttpPut("{id}")]
-        public IActionResult Put(string id, [FromBody]User item)
-        {
-            if( item == null || item.Id != id )
+            if( string.IsNullOrWhiteSpace(productId) )
             {
                 return BadRequest();
             }
 
-            var todo = UserRepository.Find( id );
-            if( todo == null )
+            var user = UserRepository
+                .GetAll()
+                .FirstOrDefault( x => x.Name == User.Identity.Name );
+
+            if(user.MonitoredProducts != null && user.MonitoredProducts.Any(x => x.ProductId.Equals(productId, StringComparison.InvariantCultureIgnoreCase)))
             {
-                return NotFound();
+                return Content("Already subscribed");
             }
 
-            UserRepository.Update( item );
-            return new NoContentResult();
+            MonitoredProduct p = new MonitoredProduct
+            {
+                ProductId = productId,
+                NotificationSettings = new NotificationSettings
+                {
+                    Availability = true,
+                    PriceChanging = true
+                }
+            };
 
+            user.MonitoredProducts.Add( p );
+            UserRepository.Update( user);
+            return Content( "Done" );
         }
 
-        [HttpDelete( "{id}" )]
-        public IActionResult Delete( string id )
+        /// <summary>
+        /// http://localhost:7575/unsubscribe?productId=5a14a7d129c52c6442372045
+        /// </summary>
+        /// <param name="productId"></param>
+        /// <returns></returns>
+        [Authorize]
+        [HttpPost( "/unsubscribe" )]
+        public IActionResult Delete( string productId )
         {
-            var todo = UserRepository.Find( id );
-            if( todo == null )
+            if( string.IsNullOrWhiteSpace( productId ) )
             {
-                return NotFound();
+                return BadRequest();
             }
 
-            UserRepository.Remove( id );
+            var user = UserRepository
+                .GetAll()
+                .FirstOrDefault( x => x.Name == User.Identity.Name );
+
+            var p = user.MonitoredProducts?.FirstOrDefault( x => x.ProductId.Equals( productId, StringComparison.InvariantCultureIgnoreCase ) );
+            if( p == null)
+            {
+                return Content( "No such subscription" );
+            }
+
+            user.MonitoredProducts.Remove( p );
+
+            UserRepository.Update( user );
             return new NoContentResult();
         }
     }
