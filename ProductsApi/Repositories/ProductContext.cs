@@ -1,7 +1,10 @@
 ﻿using MongoDB.Bson;
 using MongoDB.Driver;
 using ProductsApi.Models;
+using System;
+using System.Linq;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ProductsApi.Repositories
@@ -24,26 +27,18 @@ namespace ProductsApi.Repositories
             get { return database.GetCollection<Product>( "Items" ); }
         }
 
-        public async Task<IEnumerable<Product>> GetProducts( )
+        public async Task<IEnumerable<Product>> GetProducts(string query = null)
         {
             // строитель фильтров
             var builder = new FilterDefinitionBuilder<Product>();
-            var filter = builder.Empty; 
-            
-            //if( !String.IsNullOrWhiteSpace( name ) )
-            //{
-            //    filter = filter & builder.Regex( "Name", new BsonRegularExpression( name ) );
-            //}
-            //if( minPrice.HasValue )  // фильтр по минимальной цене
-            //{
-            //    filter = filter & builder.Gte( "Price", minPrice.Value );
-            //}
-            //if( maxPrice.HasValue )  // фильтр по максимальной цене
-            //{
-            //    filter = filter & builder.Lte( "Price", maxPrice.Value );
-            //}
+            var filter = builder.Empty;
 
-            return await Products.Find( filter ).Limit(10).ToListAsync();
+            if( !String.IsNullOrWhiteSpace( query ) )
+            {
+                filter = filter & builder.Regex( x => x.Name, BsonRegularExpression.Create(new Regex( query, RegexOptions.IgnoreCase ) ) );
+            }
+
+            return await Products.Find( filter ).ToListAsync();
         }
 
         // получаем один документ по id

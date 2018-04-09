@@ -19,9 +19,9 @@ namespace ProductsApi.Repositories
             return item;
         }
 
-        public IEnumerable<Product> GetAll()
+        public IEnumerable<Product> GetAll(string query = null)
         {
-            return _context.GetProducts().Result;
+            return _context.GetProducts(query).Result;
         }
 
         public void Remove( string id )

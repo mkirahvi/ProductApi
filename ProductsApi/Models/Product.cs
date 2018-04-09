@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -9,7 +10,7 @@ namespace ProductsApi.Models
         [BsonRepresentation( BsonType.ObjectId )]
         public string Id { get; set; }
 
-        [BsonElement("name")]
+        [BsonElement( "name" )]
         public string Name { get; set; }
 
         [BsonElement( "image" )]
@@ -23,5 +24,8 @@ namespace ProductsApi.Models
 
         [BsonElement( "history" )]
         public IEnumerable<ProductHistory> History { get; set; }
+
+        [BsonElement( "subscribers" )]
+        public IEnumerable<Object> Subscribers { get; set; }
     }
 }

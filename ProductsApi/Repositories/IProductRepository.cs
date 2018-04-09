@@ -6,7 +6,7 @@ namespace ProductsApi.Repositories
     public interface IProductRepository
     {
         void Add( Product item );
-        IEnumerable<Product> GetAll();
+        IEnumerable<Product> GetAll(string query = null);
         Product Find( string id );
         void Remove( string id );
         void Update( Product item );

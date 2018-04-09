@@ -6,20 +6,25 @@ using ProductsApi.Repositories;
 
 namespace ProductsApi.Controllers
 {
-    [Route("api/[controller]")]
+    [Route( "api/[controller]" )]
     public class ProductController : Controller
     {
         public IProductRepository ProductRepository { get; set; }
 
-        public ProductController(IProductRepository productRepository)
+        public ProductController( IProductRepository productRepository )
         {
             ProductRepository = productRepository;
         }
 
-        [HttpGet]
-        public IEnumerable<Product> Get()
+        /// <summary>
+        /// http://localhost:7575/search?query=sony
+        /// </summary>
+        /// <param name="query"></param>
+        /// <returns></returns>
+        [HttpGet ("/search")]
+        public IEnumerable<Product> Get( string query = null )
         {
-            return ProductRepository.GetAll();
+            return ProductRepository.GetAll(query);
         }
 
         [Authorize]
