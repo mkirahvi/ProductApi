@@ -4,10 +4,10 @@ namespace ProductsApi.Models
 {
     public class ProductHistory
     {
-        [BsonElement( "price" )]
+        [BsonElement("price")]
         public decimal Price { get; set; }
 
-        [BsonElement( "date" )]
+        [BsonElement("date")]
         public string Date { get; set; }
     }
 }

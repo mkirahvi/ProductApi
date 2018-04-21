@@ -1,14 +1,11 @@
-﻿using MongoDB.Bson;
+﻿using System.Collections.Generic;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
-using System.Collections.Generic;
 
 namespace ProductsApi.Models
 {
-    public class User
+    public class User : Item
     {
-        [BsonRepresentation( BsonType.ObjectId )]
-        public string Id { get; set; }
-        
         public string Name { get; set; }
 
         public string Password { get; set; }

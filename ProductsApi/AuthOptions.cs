@@ -1,5 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
-using System.Text;
+﻿using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace ProductsApi.Models
 {
@@ -11,7 +11,7 @@ namespace ProductsApi.Models
         public const int LIFETIME = 1 * 60 * 6; // время жизни токена - 6 часов
         public static SymmetricSecurityKey GetSymmetricSecurityKey()
         {
-            return new SymmetricSecurityKey( Encoding.ASCII.GetBytes( KEY ) );
+            return new SymmetricSecurityKey(Encoding.ASCII.GetBytes(KEY));
         }
     }
 }

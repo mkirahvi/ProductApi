@@ -5,27 +5,24 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace ProductsApi.Models
 {
-    public class Product
+    public class Product : Item
     {
-        [BsonRepresentation( BsonType.ObjectId )]
-        public string Id { get; set; }
-
-        [BsonElement( "name" )]
+        [BsonElement("name")]
         public string Name { get; set; }
 
-        [BsonElement( "image" )]
+        [BsonElement("image")]
         public string Image { get; set; }
 
-        [BsonElement( "link" )]
+        [BsonElement("link")]
         public string Link { get; set; }
 
-        [BsonElement( "available" )]
+        [BsonElement("available")]
         public bool Available { get; set; }
 
-        [BsonElement( "history" )]
+        [BsonElement("history")]
         public IEnumerable<ProductHistory> History { get; set; }
 
-        [BsonElement( "subscribers" )]
+        [BsonElement("subscribers")]
         public IEnumerable<Object> Subscribers { get; set; }
     }
 }

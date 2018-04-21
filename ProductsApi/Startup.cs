@@ -1,11 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
+
 using ProductsApi.Models;
 using ProductsApi.Repositories;
 
@@ -23,12 +22,12 @@ namespace ProductsApi
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddAuthentication( JwtBearerDefaults.AuthenticationScheme )
-                    .AddJwtBearer( options =>
-                    {
-                        options.RequireHttpsMetadata = false;
-                        options.TokenValidationParameters = new TokenValidationParameters
-                        {
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                    .AddJwtBearer(options =>
+                   {
+                       options.RequireHttpsMetadata = false;
+                       options.TokenValidationParameters = new TokenValidationParameters
+                       {
                             // укзывает, будет ли валидироваться издатель при валидации токена
                             ValidateIssuer = true,
                             // строка, представляющая издателя
@@ -45,29 +44,21 @@ namespace ProductsApi
                             IssuerSigningKey = AuthOptions.GetSymmetricSecurityKey(),
                             // валидация ключа безопасности
                             ValidateIssuerSigningKey = true,
-                        };
-                    } );
+                       };
+                   });
 
             services.AddMvc();
             services.AddDistributedMemoryCache();
             services.AddSession();
 
-            
-            services.AddSingleton<IProductRepository, MongoProductRepository>();
-            services.AddSingleton<IUserRepository, MongoUserRepository>();
-
-            services.Configure<MongoSettings>( options =>
-            {
-                options.ConnectionString = Configuration.GetSection( "MongoConnection:ConnectionString" ).Value;
-                options.Database = Configuration.GetSection( "MongoConnection:Database" ).Value;
-            } );
-
+            services.AddSingleton<IRepository<Product>, MongoProductRepository>();
+            services.AddSingleton<IRepository<User>, MongoUserRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IHostingEnvironment env)
         {
-            if (env.IsDevelopment())
+            if(env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
             }
